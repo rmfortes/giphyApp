@@ -17,7 +17,6 @@ export default function App() {
     )
       .then((response) => response.json())
       .then((response) => {
-        console.log(response);
         setData(response.data);
         setLoading(false);
       })
@@ -30,7 +29,6 @@ export default function App() {
     </View>
   ) : (
     data.map((gifObject, key) => {
-      console.log(gifObject.images.original);
       return (
         <View key={key} style={styles.container}>
           <Image
