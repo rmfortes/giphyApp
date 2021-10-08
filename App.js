@@ -1,21 +1,57 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  View,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 
 export default function App() {
-  return (
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetch(
+      "https://api.giphy.com/v1/gifs/trending?api_key=JhiCBevfz9NI7KPSHm0ssjk7AvaFKYmi&limit=5&rating=g"
+    )
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(response);
+        setData(response.data);
+        setLoading(false);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  return loading ? (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <ActivityIndicator></ActivityIndicator>
     </View>
+  ) : (
+    data.map((gifObject, key) => {
+      console.log(gifObject.images.original);
+      return (
+        <View key={key} style={styles.container}>
+          <Image
+            style={{
+              width: parseInt(gifObject.images.original.width),
+              height: parseInt(gifObject.images.original.height)
+            }}
+            source={{ uri: gifObject.images.original.url }}
+          />
+          <StatusBar style="auto" />
+        </View>
+      );
+    })
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
